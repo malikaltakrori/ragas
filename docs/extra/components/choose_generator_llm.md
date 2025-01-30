@@ -117,6 +117,53 @@
 
     If you want more information on how to use other Azure services, please refer to the [langchain-azure](https://python.langchain.com/docs/integrations/chat/azure_chat_openai/) documentation.
 
+=== "IBM WatsonX"
+    Install the langchain-ibm package
+
+    ```bash
+    pip install langchain-ibm
+    ```
+
+    Ensure you have your IBM WatsonX.ai key ready and available in your environment.
+
+    ```python
+    import os
+    os.environ["WATSONX_APIKEY"] = "your-ibm-watsonx-key"
+
+    # other configuration
+    watsonx_config = {
+        "url": "",  # your endpoint
+        "LLM_name": "",  # your LLM name
+        "embedding_model_name": "",  # your embedding model name
+        "project_id": "", # the project ID that you have on IBM Cloud
+    }
+
+    ```
+
+    Define your LLMs and wrap them in `LangchainLLMWrapper` so that it can be used with ragas.
+
+    ```python
+    from langchain_ibm import WatsonxLLM
+    from langchain_ibm import WatsonxEmbeddings
+    from ragas.llms import LangchainLLMWrapper 
+    from ragas.embeddings import LangchainEmbeddingsWrapper
+
+    generator_llm = LangchainLLMWrapper(WatsonxLLM(
+        model_id=watsonx_config["LLM_name"],
+        url=watsonx_config["url"],
+        project_id=watsonx_config["project_id"],
+        ))
+
+    # init the embeddings for answer_relevancy, answer_correctness and answer_similarity
+    generator_embeddings = LangchainEmbeddingsWrapper(WatsonxEmbeddings(
+        model_id=watsonx_config["embedding_model_name"],
+        url=watsonx_config["url"],
+        project_id=watsonx_config["project_id"],
+        ))
+    ```
+    
+    If you want more information on how to use other IBM WatsonX.ai services, please refer to the [langchain-ibm LLMs](https://python.langchain.com/docs/integrations/llms/ibm_watsonx) and [langchain-ibm Embedding](https://python.langchain.com/docs/integrations/text_embedding/ibm_watsonx) documentation.
+
 === "Others"
     If you are using a different LLM provider and using Langchain to interact with it, you can wrap your LLM in `LangchainLLMWrapper` so that it can be used with ragas.
 
